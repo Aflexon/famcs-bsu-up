@@ -1,0 +1,12 @@
+$ git log
+commit bf5733246a8e17d88baad11bc05d6ed708475032
+Author: Aleksey Afanasenko <i@aflexon.com>
+Date:   Tue Feb 9 11:38:29 2016 +0300
+
+    Add status.txt
+
+commit 9bf97a4166243a7f3d6aa3b260b2654ab4f33cf0
+Author: Aleksey Afanasenko <i@aflexon.com>
+Date:   Tue Feb 9 11:37:01 2016 +0300
+
+    Add .gitignore
