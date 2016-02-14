@@ -3,6 +3,7 @@ package chat;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -48,7 +49,7 @@ public class Messages {
     }
 
     public void writeToJsonFile(String fileName){
-        
+
     }
 
     private void add(String id, String author, String message, long timestamp){
@@ -61,6 +62,15 @@ public class Messages {
 
     public void printMessages(){
         messages.forEach(System.out::println);
+    }
+
+    public void delete(String id){
+        Iterator<Message> message = messages.iterator();
+        while (message.hasNext()){
+            if (message.next().getId().equals(id)){
+                message.remove();
+            }
+        }
     }
 
 
