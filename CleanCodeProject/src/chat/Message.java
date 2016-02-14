@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * Created by Алексей on 14.02.2016.
  */
-public class Message {
+class Message {
     private String id;
     private String author;
     private String message;

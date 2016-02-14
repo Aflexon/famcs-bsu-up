@@ -1,9 +1,6 @@
 package chat;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -17,6 +14,7 @@ import javax.json.*;
  */
 public class Messages {
     private ArrayList<Message> messages;
+    private Logger log = Logger.INSTANCE;
 
     public Messages(){
         messages = new ArrayList<>();
@@ -27,9 +25,11 @@ public class Messages {
             JsonReader reader = Json.createReader(new FileReader(fileName));
             JsonArray messages = reader.readArray();
             messages.forEach(this::addFromJson);
+            log.add("Info", "Add " + messages.size() + " messages from file " + fileName);
             this.messages.sort((Message a, Message b) -> a.getDate().compareTo(b.getDate()));
         } catch(FileNotFoundException e){
             System.err.println("File " + fileName + " not found");
+            log.add("Error", "File " + fileName + " not found");
         }
     }
 
@@ -45,6 +45,7 @@ public class Messages {
         catch(Exception e){
             System.err.println("Something is wrong with data: ");
             System.err.println(val);
+            log.add("Error", "Something is wrong with data " + val);
         }
     }
 
@@ -61,6 +62,7 @@ public class Messages {
         }
         catch(IOException e){
             System.err.println("Something went wrong with output to file " + fileName);
+            log.add("Error", "Something went wrong with output to file " + fileName);
         }
     }
 
@@ -71,6 +73,12 @@ public class Messages {
         objectBuilder.add("message", message.getMessage());
         objectBuilder.add("timestamp", message.getTimestamp());
         return objectBuilder.build();
+    }
+
+    public void printByPeriod(long from, long to){
+        messages.stream()
+                .filter(message -> message.getTimestamp() >= from && message.getTimestamp() <= to)
+                .forEach(System.out::println);
     }
 
     private void add(String id, String author, String message, long timestamp){
