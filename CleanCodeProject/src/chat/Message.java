@@ -1,5 +1,7 @@
 package chat;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,8 +14,11 @@ public class Message {
     private String message;
     private Date timestamp;
 
-    public Message(){
+    public Message(String author, String message, long timestamp){
         this.id = UUID.randomUUID().toString();
+        this.author = author;
+        this.message = message;
+        this.timestamp = new Date(timestamp);
     }
 
     public String getId(){
@@ -42,5 +47,12 @@ public class Message {
 
     public void setTimestamp(long timestamp){
         this.timestamp.setTime(timestamp);
+    }
+
+    public String toString(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        return "id: " + getId() + "\r\n"
+                + "[" + dateFormat.format(timestamp) + "] "
+                + getAuthor() + ": " + getMessage();
     }
 }
