@@ -2,6 +2,7 @@ package chat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by Алексей on 14.02.2016.
@@ -17,6 +18,10 @@ public class Message {
         this.author = author;
         this.message = message;
         this.timestamp = new Date(timestamp);
+    }
+
+    public Message(String author, String message){
+        this(UUID.randomUUID().toString(), author, message, (new Date()).getTime());
     }
 
     public void setId(String id){
@@ -53,7 +58,7 @@ public class Message {
 
     public String getTime(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        return dateFormat.format(timestamp);
+        return dateFormat.format(getTimestamp());
     }
 
     public String toString(){
