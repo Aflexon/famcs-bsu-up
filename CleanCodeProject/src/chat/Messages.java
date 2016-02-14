@@ -87,6 +87,7 @@ public class Messages {
 
     public void newMessage(String author, String message){
         messages.add(new Message(author, message));
+        log.add("Info", "New message from " + author + " add");
     }
 
     public void printMessages(){
@@ -110,6 +111,7 @@ public class Messages {
         while (message.hasNext()){
             if (message.next().getId().equals(id)){
                 message.remove();
+                log.add("Info", "Message with id:" + id + " remove");
             }
         }
     }

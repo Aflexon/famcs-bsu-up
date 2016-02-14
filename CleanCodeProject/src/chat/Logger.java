@@ -21,11 +21,10 @@ public class Logger {
 
     public void add(String type, String message){
         try{
-            BufferedWriter bw = new BufferedWriter(log);
-            bw.write(type + ": " + message);
-            bw.close();
+            log.write(type + ": " + message + "\r\n");
+            log.flush();
         } catch(IOException e){
-            System.err.println("Something went wrong with logger");
+            System.err.println("Something went wrong with logger" + e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import chat.Logger;
 import chat.Messages;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class UI {
     private String name;
     private Scanner input;
     private Messages chat;
+    private Logger log = Logger.INSTANCE;
 
     public UI(){
         input = new Scanner(System.in);
@@ -40,7 +42,15 @@ public class UI {
             if(mode == operationDescriptions.length){
                 break;
             }
+            if (mode <= 0 || mode > operationDescriptions.length){
+                System.err.println("Operation must be in [1.." + operationDescriptions.length + "]");
+                log.add("Warning", "Operation must be in [1.." + operationDescriptions.length + "]");
+                continue;
+            }
+
+            log.add("Info", "Start " + mode + " operation(" + operationDescriptions[mode - 1] + ")");
             run(mode);
+            log.add("Info", "Stop " + mode + " operation");
             System.out.println("Press Enter to continue...");
             try
             {
@@ -175,9 +185,6 @@ public class UI {
         try {
             String stringMode  = input.nextLine();
             int mode = new Integer(stringMode);
-            if (mode <= 0 || mode > operationDescriptions.length){
-                System.err.println("Operation must be in [1.." + operationDescriptions.length + "]");
-            }
             return mode;
         } catch(NumberFormatException e){
             System.err.println("Operation must be a integer");

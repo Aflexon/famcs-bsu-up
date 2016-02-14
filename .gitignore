@@ -1,4 +1,5 @@
-# содержимое файла .gitignore для IDEA
+﻿# содержимое файла .gitignore для IDEA
 *.iml
 .idea/
 out/
+*.log
