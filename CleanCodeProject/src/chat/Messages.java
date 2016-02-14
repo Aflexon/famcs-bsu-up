@@ -1,7 +1,13 @@
 package chat;
 
-import java.lang.reflect.Array;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,12 +22,33 @@ public class Messages {
         messages = new ArrayList<>();
     }
 
-    public void readFromJsonFile(String fileName){
+    public void readFromJsonFile(String fileName) {
+        try {
+            JsonReader reader = Json.createReader(new FileReader(fileName));
+            JsonArray messages = reader.readArray();
+            messages.forEach(this::addFromJson);
+            this.messages.sort((Message a, Message b) -> a.getDate().compareTo(b.getDate()));
+        } catch(FileNotFoundException e){
+            System.err.println("File " + fileName + " not found");
+        }
+    }
 
+    private void addFromJson(JsonValue val){
+        try {
+            JsonObject message = (JsonObject) val;
+            String id = message.getString("id");
+            String author = message.getString("author");
+            String text = message.getString("message");
+            long timestamp = message.getJsonNumber("timestamp").longValue();
+            add(id, author, text, timestamp);
+        }
+        catch(Exception e){
+            System.err.println("Something is wrong with your data");
+        }
     }
 
     public void writeToJsonFile(String fileName){
-
+        
     }
 
     private void add(String id, String author, String message, long timestamp){

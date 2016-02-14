@@ -51,6 +51,9 @@ public class Message {
     public long getTimestamp(){
         return timestamp.getTime();
     }
+    public Date getDate(){
+        return timestamp;
+    }
 
     public void setTimestamp(long timestamp){
         this.timestamp.setTime(timestamp);
