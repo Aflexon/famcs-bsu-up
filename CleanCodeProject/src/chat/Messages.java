@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 import javax.json.*;
 
 /**
@@ -82,6 +83,18 @@ public class Messages {
 
     public void printMessages(){
         messages.forEach(System.out::println);
+    }
+
+    public void printByAuthor(String author){
+        messages.stream().filter(message -> message.getAuthor().equals(author)).forEach(System.out::println);
+    }
+
+    public void printByWord(String word){
+        messages.stream().filter(message -> message.getMessage().contains(word)).forEach(System.out::println);
+    }
+
+    public void printByRegExp(String regExp){
+        messages.stream().filter(message -> Pattern.matches(regExp, message.getMessage())).forEach(System.out::println);
     }
 
     public void delete(String id){
