@@ -2,13 +2,11 @@ package chat;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
+import javax.json.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,12 +42,34 @@ public class Messages {
             add(id, author, text, timestamp);
         }
         catch(Exception e){
-            System.err.println("Something is wrong with your data");
+            System.err.println("Something is wrong with data: ");
+            System.err.println(val);
         }
     }
 
     public void writeToJsonFile(String fileName){
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        for(Message message : messages){
+            builder.add(buildJsonObject(message));
+        }
+        JsonArray jsonArray = builder.build();
+        try {
+            JsonWriter writer = Json.createWriter(new FileWriter(fileName));
+            writer.write(jsonArray);
+            writer.close();
+        }
+        catch(IOException e){
+            System.err.println("Something went wrong with output to file " + fileName);
+        }
+    }
 
+    private JsonObject buildJsonObject(Message message){
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        objectBuilder.add("id", message.getId());
+        objectBuilder.add("author", message.getAuthor());
+        objectBuilder.add("message", message.getMessage());
+        objectBuilder.add("timestamp", message.getTimestamp());
+        return objectBuilder.build();
     }
 
     private void add(String id, String author, String message, long timestamp){
@@ -72,6 +92,4 @@ public class Messages {
             }
         }
     }
-
-
 }
