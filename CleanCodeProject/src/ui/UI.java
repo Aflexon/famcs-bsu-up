@@ -164,11 +164,17 @@ public class UI {
     }
 
     public void printByPeriod(){
-        System.out.println("Please enter timestamp from:");
-        long from = input.nextLong();
-        System.out.println("Please enter timestamp to:");
-        long to = input.nextLong();
-        chat.printByPeriod(from, to);
+        try {
+            System.out.println("Please enter timestamp from:");
+            long from = new Long(input.nextLine());
+            System.out.println("Please enter timestamp to:");
+            long to = new Long(input.nextLine());
+            chat.printByPeriod(from, to);
+        } catch(NumberFormatException e){
+            System.err.println("Timestamp must be a integer");
+            log.add("Warning", "Timestamp must be a integer");
+        }
+
     }
 
     public void about(){
@@ -204,6 +210,7 @@ public class UI {
             return mode;
         } catch(NumberFormatException e){
             System.err.println("Operation must be a integer");
+            log.add("Warning", "Operation must be a integer");
             return 0;
         }
 
