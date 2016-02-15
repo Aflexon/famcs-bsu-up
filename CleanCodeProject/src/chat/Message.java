@@ -4,9 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Created by Алексей on 14.02.2016.
- */
 class Message {
     private String id;
     private String author;
@@ -18,6 +15,10 @@ class Message {
         this.author = author;
         this.message = message;
         this.timestamp = new Date(timestamp);
+    }
+
+    public Message(String author, String message, long timestamp){
+        this(UUID.randomUUID().toString(), author, message, timestamp);
     }
 
     public Message(String author, String message){

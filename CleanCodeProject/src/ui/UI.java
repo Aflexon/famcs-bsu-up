@@ -6,9 +6,6 @@ import chat.Messages;
 import java.io.IOException;
 import java.util.Scanner;
 
-/**
- * Created by Алексей on 14.02.2016.
- */
 public class UI {
     private static final String operationDescriptions[] = {
             "Change name",
@@ -21,6 +18,7 @@ public class UI {
             "Print messages by key word",
             "Print messages by regular expression",
             "Print messages by period",
+            "Add message",
             "About",
             "Exit",
     };
@@ -74,7 +72,7 @@ public class UI {
                 writeToFile();
                 break;
             case 4:
-                addMessage();
+                writeMessage();
                 break;
             case 5:
                 deleteMessage();
@@ -95,6 +93,9 @@ public class UI {
                 printByPeriod();
                 break;
             case 11:
+                addMessage();
+                break;
+            case 12:
                 about();
                 break;
             default:
@@ -122,9 +123,24 @@ public class UI {
         chat.writeToJsonFile(input.nextLine());
     }
 
-    public void addMessage(){
+    public void writeMessage(){
         System.out.println("Please enter a message:");
         chat.newMessage(getName(), input.nextLine());
+    }
+
+    public void addMessage() {
+        try {
+            System.out.println("Please enter a author:");
+            String author = input.nextLine();
+            System.out.println("Please enter a message:");
+            String message = input.nextLine();
+            System.out.println("Please enter a timestamp:");
+            long timestamp = new Long(input.nextLine());
+            chat.addMessage(author, message, timestamp);
+        } catch (NumberFormatException e) {
+            System.err.println("Timestamp is a integer value");
+            log.add("Error", "Timestamp is a integer value");
+        }
     }
 
     public void deleteMessage(){

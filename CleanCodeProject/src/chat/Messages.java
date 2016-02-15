@@ -6,12 +6,6 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 import javax.json.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: fpm.afanasenAA
- * Date: 2/9/16
- * Time: 12:24 PM
- */
 public class Messages {
     private ArrayList<Message> messages;
     private Logger log = Logger.INSTANCE;
@@ -26,7 +20,6 @@ public class Messages {
             JsonArray messages = reader.readArray();
             messages.forEach(this::addFromJson);
             log.add("Info", "Add " + messages.size() + " messages from file " + fileName);
-            this.messages.sort((Message a, Message b) -> a.getDate().compareTo(b.getDate()));
         } catch(FileNotFoundException e){
             System.err.println("File " + fileName + " not found");
             log.add("Error", "File " + fileName + " not found");
@@ -81,8 +74,13 @@ public class Messages {
                 .forEach(System.out::println);
     }
 
-    private void add(String id, String author, String message, long timestamp){
+    public void add(String id, String author, String message, long timestamp){
         messages.add(new Message(id, author, message, timestamp));
+    }
+
+    public void addMessage(String author, String message, long timestamp){
+        messages.add(new Message(author, message, timestamp));
+        log.add("Info", "New message from " + author + " add");
     }
 
     public void newMessage(String author, String message){
@@ -91,6 +89,7 @@ public class Messages {
     }
 
     public void printMessages(){
+        this.messages.sort((Message a, Message b) -> a.getDate().compareTo(b.getDate()));
         messages.forEach(System.out::println);
     }
 

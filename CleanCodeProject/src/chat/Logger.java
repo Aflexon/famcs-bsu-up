@@ -1,12 +1,8 @@
 package chat;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Created by Алексей on 14.02.2016.
- */
 public class Logger {
     public static final Logger INSTANCE = new Logger("chat.log");
 
