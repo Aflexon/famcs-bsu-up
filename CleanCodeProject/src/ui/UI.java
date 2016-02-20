@@ -31,7 +31,7 @@ public class UI {
         input = new Scanner(System.in);
         chat = new MessageContainer();
         log = new Logger("UI.log");
-
+        log.info("Start UI");
         System.out.println("Welcome to our chat!");
         System.out.println("What's your name?");
         setName(input.nextLine());

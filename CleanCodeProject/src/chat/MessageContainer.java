@@ -17,10 +17,12 @@ public class MessageContainer {
 
     public void readFromJsonFile(String fileName) {
         try {
+            int oldSize = this.messages.size();
             JsonReader reader = Json.createReader(new FileReader(fileName));
             JsonArray messages = reader.readArray();
             messages.forEach(this::addFromJson);
-            log.info("Add " + messages.size() + " messages from file " + fileName);
+            int addedAmount = this.messages.size() - oldSize;
+            log.info("Add " + addedAmount + " messages from file " + fileName);
         } catch(FileNotFoundException e){
             System.err.println("File " + fileName + " not found");
             log.info("File " + fileName + " not found");
@@ -76,12 +78,28 @@ public class MessageContainer {
     }
 
     public void add(String id, String author, String message, long timestamp){
-        messages.add(new Message(id, author, message, timestamp));
+        if(!hasId(id)){
+            messages.add(new Message(id, author, message, timestamp));
+            log.info("Add message " + id);
+        }
+        else{
+            log.error("Message with id " + id + " exist");
+            System.err.println("Message with id " + id + " exist");
+        }
     }
 
     public void addMessage(String author, String message, long timestamp){
         messages.add(new Message(author, message, timestamp));
         log.info("New message from " + author + " add");
+    }
+
+    public boolean hasId(String id){
+        for(Message message : messages){
+            if (message.getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void newMessage(String author, String message){
