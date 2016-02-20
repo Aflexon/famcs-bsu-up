@@ -1,8 +1,7 @@
 package ui;
 
 import chat.Logger;
-import chat.Messages;
-
+import chat.MessageContainer;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -25,30 +24,38 @@ public class UI {
 
     private String name;
     private Scanner input;
-    private Messages chat;
-    private Logger log = Logger.INSTANCE;
+    private MessageContainer chat;
+    private Logger log;
 
     public UI(){
         input = new Scanner(System.in);
-        chat = new Messages();
+        chat = new MessageContainer();
+        log = new Logger("UI.log");
 
         System.out.println("Welcome to our chat!");
         System.out.println("What's your name?");
         setName(input.nextLine());
+
+        operationHandling();
+    }
+
+    private void operationHandling(){
         while(true){
             int mode = chooseOperation();
             if(mode == operationDescriptions.length){
+                log.info("Stop UI");
                 break;
             }
             if (mode <= 0 || mode > operationDescriptions.length){
-                System.err.println("Operation must be in [1.." + operationDescriptions.length + "]");
-                log.add("Warning", "Operation must be in [1.." + operationDescriptions.length + "]");
+                System.out.println("Warning: Operation must be in [1.." + operationDescriptions.length + "]");
+                log.warning("Operation must be in [1.." + operationDescriptions.length + "]");
                 continue;
             }
 
-            log.add("Info", "Start " + mode + " operation(" + operationDescriptions[mode - 1] + ")");
+            log.info("Start " + mode + " operation(" + operationDescriptions[mode - 1] + ")");
             run(mode);
-            log.add("Info", "Stop " + mode + " operation");
+            log.info("Stop " + mode + " operation");
+
             System.out.println("Press Enter to continue...");
             try
             {
@@ -57,7 +64,6 @@ public class UI {
             catch(IOException e)
             {}
         }
-
     }
 
     public void run(int mode){
@@ -136,10 +142,13 @@ public class UI {
             String message = input.nextLine();
             System.out.println("Please enter a timestamp:");
             long timestamp = new Long(input.nextLine());
+            if(timestamp > 0){
+                throw new NumberFormatException("Timestamp is a positive number");
+            }
             chat.addMessage(author, message, timestamp);
         } catch (NumberFormatException e) {
-            System.err.println("Timestamp is a integer value");
-            log.add("Error", "Timestamp is a integer value");
+            System.err.println("Timestamp must be a positive integer");
+            log.error("Timestamp must be a positive integer");
         }
     }
 
@@ -172,7 +181,7 @@ public class UI {
             chat.printByPeriod(from, to);
         } catch(NumberFormatException e){
             System.err.println("Timestamp must be a integer");
-            log.add("Warning", "Timestamp must be a integer");
+            log.error("Timestamp must be a integer");
         }
 
     }
@@ -206,11 +215,10 @@ public class UI {
         }
         try {
             String stringMode  = input.nextLine();
-            int mode = new Integer(stringMode);
-            return mode;
+            return new Integer(stringMode);
         } catch(NumberFormatException e){
-            System.err.println("Operation must be a integer");
-            log.add("Warning", "Operation must be a integer");
+            System.out.println("Operation must be a integer");
+            log.warning("Operation must be a integer");
             return 0;
         }
 

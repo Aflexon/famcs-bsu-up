@@ -6,12 +6,13 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 import javax.json.*;
 
-public class Messages {
+public class MessageContainer {
     private ArrayList<Message> messages;
-    private Logger log = Logger.INSTANCE;
+    private Logger log;
 
-    public Messages(){
+    public MessageContainer(){
         messages = new ArrayList<>();
+        log = new Logger("MessageContainer.log");
     }
 
     public void readFromJsonFile(String fileName) {
@@ -19,10 +20,10 @@ public class Messages {
             JsonReader reader = Json.createReader(new FileReader(fileName));
             JsonArray messages = reader.readArray();
             messages.forEach(this::addFromJson);
-            log.add("Info", "Add " + messages.size() + " messages from file " + fileName);
+            log.info("Add " + messages.size() + " messages from file " + fileName);
         } catch(FileNotFoundException e){
             System.err.println("File " + fileName + " not found");
-            log.add("Error", "File " + fileName + " not found");
+            log.info("File " + fileName + " not found");
         }
     }
 
@@ -38,7 +39,7 @@ public class Messages {
         catch(Exception e){
             System.err.println("Something is wrong with data: ");
             System.err.println(val);
-            log.add("Error", "Something is wrong with data " + val);
+            log.error("Something is wrong with data " + val);
         }
     }
 
@@ -55,7 +56,7 @@ public class Messages {
         }
         catch(IOException e){
             System.err.println("Something went wrong with output to file " + fileName);
-            log.add("Error", "Something went wrong with output to file " + fileName);
+            log.error("Something went wrong with output to file " + fileName);
         }
     }
 
@@ -80,12 +81,12 @@ public class Messages {
 
     public void addMessage(String author, String message, long timestamp){
         messages.add(new Message(author, message, timestamp));
-        log.add("Info", "New message from " + author + " add");
+        log.info("New message from " + author + " add");
     }
 
     public void newMessage(String author, String message){
         messages.add(new Message(author, message));
-        log.add("Info", "New message from " + author + " add");
+        log.info("New message from " + author + " add");
     }
 
     public void printMessages(){
@@ -110,7 +111,7 @@ public class Messages {
         while (message.hasNext()){
             if (message.next().getId().equals(id)){
                 message.remove();
-                log.add("Info", "Message with id:" + id + " remove");
+                log.info("Message with id:" + id + " remove");
             }
         }
     }
