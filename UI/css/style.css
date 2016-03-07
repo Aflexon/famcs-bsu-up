@@ -110,8 +110,7 @@ a.navbar-brand{
 }
 
 
-.message
-{
+.message {
     text-align: justify;
     display: inline-block;
     padding: 5px;
@@ -122,6 +121,7 @@ a.navbar-brand{
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+    word-wrap:break-word;
 }
 
 .message-wrapper{
@@ -188,6 +188,18 @@ a.navbar-brand{
     border-color: #20816c;
 }
 
+.btn-navbar{
+    border-color: #fff;
+    background: transparent;
+    color: #fff;
+    padding: 2px 6px;
+}
+
+.btn-navbar:hover, .btn-navbar:focus{
+    color: #c0c0c0;
+    border-color: #c0c0c0;
+}
+
 .my-message{
     float: right;
     background: #2EB398;
@@ -248,7 +260,11 @@ a.navbar-brand{
     vertical-align: baseline;
     border-radius: .25em;
 }
-
+@media(min-width: 801px){
+    #bars{
+        display: none;
+    }
+}
 @media(max-width: 800px) {
     .left-column{
         width: 100%;
@@ -257,7 +273,7 @@ a.navbar-brand{
         display: none;
         position: absolute;
         right: 0;
-        width: 50%;
+        width: 30%;
     }
     .send{
         width: 100%;
@@ -267,6 +283,9 @@ a.navbar-brand{
 @media(max-width: 500px){
     .btn-send{
         width: 20%;
+    }
+    .right-column{
+        width: 50%;
     }
     .send textarea{
         width: 80%;

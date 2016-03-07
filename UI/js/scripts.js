@@ -65,6 +65,10 @@ function formatDate(date){
     return dd + '.' + mm + '.' + yy + ' ' + hh + ':' + minutes;
 }
 
+function toggleUsers(){
+    $(".right-column").toggle();
+}
+
 $(function(){
     $('#message-form').submit(function(e){
         e.preventDefault();
