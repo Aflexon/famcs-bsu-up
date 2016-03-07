@@ -22,6 +22,31 @@ function send(){
     $("#messages-container").scrollTop($("#messages-container")[0].scrollHeight);
 }
 
+function changeName(){
+    swal({
+        title: "Change name!",
+        text: "Write your new name:",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        animation: "slide-from-top",
+        inputPlaceholder: "New name" },
+        function(inputValue){
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("You need to write something!");
+                return false;
+            }
+            if (inputValue.length > 30) {
+                swal.showInputError("The name may not be greater than 30 characters.");
+                return false;
+            }
+            author = inputValue;
+            $('#me').html(author);
+            swal.close();
+        });
+}
+
 function formatDate(date){
     var minutes = date.getMinutes();
     if (minutes < 10) minutes = '0' + minutes;
@@ -64,4 +89,5 @@ $(function(){
         message.html("This message has been removed.");
         message.addClass("deleted");
     });
+
 });
