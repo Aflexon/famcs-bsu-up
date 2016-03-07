@@ -18,12 +18,12 @@
                 </a>
             </div>
             <div class="navbar-right">
-                <span class="label label-success"><i class="fa fa-server"></i> Online</span>
+                <span class="label label-danger"><i class="fa fa-server"></i> Offline</span>
             </div>
         </nav>
         <div class="container">
             <div class="left-column">
-                <div class="messages-container">
+                <div class="messages-container" id="messages-container">
                     <div class="message-wrapper">
                         <div class="message-info">28.02.2016 17:58 Selena Gomez</div>
                         <div class="message">Hi, Jason Statham</div>
@@ -32,7 +32,7 @@
                         <div class="message-info me">
                             28.02.2016 18:00 Jason Statham
                             <a href="#" title="Edit message"><i class="fa fa-pencil"></i></a>
-                            <a href="#" title="Remove message"><i class="fa fa-trash"></i></a></div>
+                            <a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a></div>
                         <div class="message my-message">
                             Hi, Selena! How are you?
                         </div>
@@ -47,10 +47,14 @@
                     </div>
                     <div class="message-wrapper">
                         <div class="message-info me">
-                            28.02.2016 18:08 Jason Statham
-                            <a href="#" title="Edit message"><i class="fa fa-pencil"></i></a>
-                            <a href="#" title="Remove message"><i class="fa fa-trash"></i></a>
-                            <br> <i>Edited 28.02.2016 18:49</i>
+                            <div class="author-info">
+                                28.02.2016 18:08 Jason Statham
+                                <a href="#" title="Edit message"><i class="fa fa-pencil"></i></a>
+                                <a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>
+                            </div>
+                            <div class="edit-info">
+                                <i>Edited 28.02.2016 18:49</i>
+                            </div>
                         </div>
                         <div class="message my-message">
                             Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют от нас анализа новых предложений. Разнообразный и богатый опыт постоянное информационно-пропагандистское обеспечение нашей деятельности способствует подготовки и реализации направлений прогрессивного развития.
@@ -58,15 +62,15 @@
                     </div>
                     <div class="message-wrapper">
                         <div class="message-info">28.02.2016 18:08 Woody Allen</div>
-                        <div class="message">
+                        <div class="message deleted">
                             This message has been removed.
                         </div>
                     </div>
                 </div>
             </div>
             <div class="send">
-                <form method="post" action="#" class="message-send">
-                    <textarea placeholder="What do you want to say?"></textarea>
+                <form id="message-form" class="message-send">
+                    <textarea id="message" required placeholder="What do you want to say?"></textarea>
                     <button type="submit" class="btn btn-send">Send</button>
                 </form>
             </div>
@@ -84,5 +88,7 @@
         <footer class="footer">
             <p class="text-muted">&copy 2016 Aleksey Afanasenko</p>
         </footer>
+        <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+        <script src="js/scripts.js"></script>
     </body>
 </html>

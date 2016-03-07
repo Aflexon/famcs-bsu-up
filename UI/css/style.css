@@ -81,6 +81,10 @@ a.navbar-brand{
     bottom: 50px;
 }
 
+.deleted{
+    opacity: 0.5;
+}
+
 .right-column{
     background-color: #1B2224;
     color: #5C6669;
