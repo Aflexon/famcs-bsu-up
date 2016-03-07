@@ -28,6 +28,7 @@ public class Logger {
     private void add(String type, String message){
         try(FileWriter log = new FileWriter(logFile, true)){
             log.write("[" + dateFormat.format(System.currentTimeMillis()) + "] " + type + ": " + message + "\r\n");
+            log.close();
         } catch(IOException e){
             System.err.println("Something went wrong with logger");
             System.err.println(e.getMessage());
