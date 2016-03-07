@@ -1,4 +1,8 @@
 var author = "Guest";
+var messageField = $('#message');
+var messageContainer = $('#messages-container');
+var usersList = $('#users-list');
+var messageForm = $('#message-form');
 
 function htmlentities(s){
     var pre = document.createElement('pre');
@@ -8,7 +12,7 @@ function htmlentities(s){
 }
 
 function send(){
-    if($('#message').val().length == 0){
+    if(messageField.val().length == 0){
         sweetAlert(
             'Oops...',
             'Message can not be empty!',
@@ -16,17 +20,17 @@ function send(){
         );
         return;
     }
-    var message = '<div class="message my-message">' + htmlentities($('#message').val()) + '</div></div>';
+    var message = '<div class="message my-message">' + htmlentities(messageField.val()) + '</div></div>';
     var date = new Date();
-    var controls = '<a href="#" title="Edit message"><i class="fa fa-pencil"></i></a> ' +
+    var controls = '<a href="#" class="edit" title="Edit message"><i class="fa fa-pencil"></i></a> ' +
         '<a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>';
     var authorInfo = '<div class="author-info">' + formatDate(date) + ' ' + author + ' ' + controls + '</div>';
     var messageInfo = '<div class="message-info me">' + authorInfo + '</div>';
-    $('#message').val("");
-    $('#messages-container').append(
+    messageField.val("");
+    messageContainer.append(
       '<div class="message-wrapper">' + messageInfo + message + '</div>'
     );
-    $("#messages-container").scrollTop($("#messages-container")[0].scrollHeight);
+    scrollDownMessages();
 }
 
 function changeName(){
@@ -73,23 +77,29 @@ function formatDate(date){
 }
 
 function toggleUsers(){
-    $(".right-column").toggle();
+    usersList.toggle();
+}
+
+function scrollDownMessages(){
+    messageContainer.scrollTop(messageContainer[0].scrollHeight);
 }
 
 $(function(){
-    $('#message-form').submit(function(e){
+    scrollDownMessages();
+
+    messageForm.submit(function(e){
         e.preventDefault();
         send();
     });
 
-    $('#message').keypress(function(e){
+    messageField.keypress(function(e){
         var keyCode = (e.keyCode ? e.keyCode : e.which);
         if (!e.ctrlKey && keyCode == 13) {
             e.preventDefault();
-            $('#message-form').submit();
+            messageForm.submit();
         }
         else if((keyCode == 10 || keyCode == 13) && e.ctrlKey){
-            $('#message').val($('#message').val() + "\n");
+            messageField.val(messageField.val() + "\n");
         }
     });
 
@@ -99,6 +109,38 @@ $(function(){
         $(this).remove();
         message.html("This message has been removed.");
         message.addClass("deleted");
+    });
+
+    $(document).on('click', '.edit', function(){
+        var messageWrapper = $(this).parent().parent();
+        var message = messageWrapper.next();
+        var messageText = message.html()
+        swal({
+            title: "Edit your message!",
+            text: "<textarea id='messageField' style='width:100%;resize:none;' rows='3'>" + messageText +"</textarea>",
+            html: true,
+            showCancelButton: true,
+            closeOnConfirm: false,
+            animation: "slide-from-top"},
+            function(){
+                var messageValue = $('#messageField').val();
+                if (messageValue === false) return false;
+                if (messageValue === "") {
+                    swal.showInputError("You need to write something!");
+                    return false;
+                }
+                if (messageValue === messageText){
+                    swal.close();
+                    return false;
+                }
+                message.html(htmlentities(messageValue));
+                var messageInfo = messageWrapper.children();
+                messageInfo.next().remove();
+                var editInfo = "Edited  " + formatDate(new Date());
+                messageInfo.append('<div class="edit-info">' + editInfo + '</div>');
+                swal.close();
+            }
+        );
     });
 
 });
