@@ -137,7 +137,7 @@ $(function(){
                 var messageInfo = messageWrapper.children();
                 messageInfo.next().remove();
                 var editInfo = "Edited  " + formatDate(new Date());
-                messageInfo.append('<div class="edit-info">' + editInfo + '</div>');
+                messageInfo.parent().append('<div class="edit-info">' + editInfo + '</div>');
                 swal.close();
             }
         );

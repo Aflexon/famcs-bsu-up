@@ -261,6 +261,11 @@ a.navbar-brand{
     vertical-align: baseline;
     border-radius: .25em;
 }
+
+.edit-info{
+    font-style: italic;
+}
+
 @media(min-width: 801px){
     #bars{
         display: none;
