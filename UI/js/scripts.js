@@ -1,4 +1,11 @@
-var author = "Jason Statham";
+var author = "Guest";
+
+function htmlentities(s){
+    var pre = document.createElement('pre');
+    var text = document.createTextNode(s);
+    pre.appendChild(text);
+    return pre.innerHTML;
+}
 
 function send(){
     if($('#message').val().length == 0){
@@ -9,7 +16,7 @@ function send(){
         );
         return;
     }
-    var message = '<div class="message my-message">' + $('#message').val() + '</div></div>';
+    var message = '<div class="message my-message">' + htmlentities($('#message').val()) + '</div></div>';
     var date = new Date();
     var controls = '<a href="#" title="Edit message"><i class="fa fa-pencil"></i></a> ' +
         '<a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>';
