@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class UI {
-    private static final String operationDescriptions[] = {
+    private static final String OPERATION_DESCRIPTIONS[] = {
             "Change name",
             "Read messages from file",
             "Write messages to file",
@@ -42,17 +42,17 @@ public class UI {
     private void operationHandling(){
         while(true){
             int mode = chooseOperation();
-            if(mode == operationDescriptions.length){
+            if(mode == OPERATION_DESCRIPTIONS.length){
                 log.info("Stop UI");
                 break;
             }
-            if (mode <= 0 || mode > operationDescriptions.length){
-                System.out.println("Warning: Operation must be in [1.." + operationDescriptions.length + "]");
-                log.warning("Operation must be in [1.." + operationDescriptions.length + "]");
+            if (mode <= 0 || mode > OPERATION_DESCRIPTIONS.length){
+                System.out.println("Warning: Operation must be in [1.." + OPERATION_DESCRIPTIONS.length + "]");
+                log.warning("Operation must be in [1.." + OPERATION_DESCRIPTIONS.length + "]");
                 continue;
             }
 
-            log.info("Start " + mode + " operation(" + operationDescriptions[mode - 1] + ")");
+            log.info("Start " + mode + " operation(" + OPERATION_DESCRIPTIONS[mode - 1] + ")");
             run(mode);
             log.info("Stop " + mode + " operation");
 
@@ -105,7 +105,7 @@ public class UI {
                 about();
                 break;
             default:
-                System.err.println("Operation must be in [1.." + (operationDescriptions.length - 1) + "]");
+                System.err.println("Operation must be in [1.." + (OPERATION_DESCRIPTIONS.length - 1) + "]");
                 break;
         }
     }
@@ -210,8 +210,8 @@ public class UI {
 
     public int chooseOperation(){
         System.out.println("Please choose operation ");
-        for(int i = 0; i < operationDescriptions.length; i++){
-            System.out.println((i + 1) + " - " + operationDescriptions[i]);
+        for(int i = 0; i < OPERATION_DESCRIPTIONS.length; i++){
+            System.out.println((i + 1) + " - " + OPERATION_DESCRIPTIONS[i]);
         }
         try {
             String stringMode  = input.nextLine();

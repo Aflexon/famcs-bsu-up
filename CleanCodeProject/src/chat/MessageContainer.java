@@ -3,11 +3,12 @@ package chat;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 import javax.json.*;
 
 public class MessageContainer {
-    private ArrayList<Message> messages;
+    private List<Message> messages;
     private Logger log;
 
     public MessageContainer(){
@@ -16,9 +17,8 @@ public class MessageContainer {
     }
 
     public void readFromJsonFile(String fileName) {
-        try {
+        try(JsonReader reader = Json.createReader(new FileReader(fileName))) {
             int oldSize = this.messages.size();
-            JsonReader reader = Json.createReader(new FileReader(fileName));
             JsonArray messages = reader.readArray();
             messages.forEach(this::addFromJson);
             int addedAmount = this.messages.size() - oldSize;
@@ -83,8 +83,8 @@ public class MessageContainer {
             log.info("Add message " + id);
         }
         else{
-            log.error("Message with id " + id + " exist");
-            System.err.println("Message with id " + id + " exist");
+            log.warning("Message with id " + id + " exist");
+            System.out.println("Message with id " + id + " exist");
         }
     }
 
