@@ -276,10 +276,12 @@ a.navbar-brand{
         width: 100%;
     }
     .right-column{
-        display: none;
         position: absolute;
         right: 0;
         width: 30%;
+    }
+    .hidden-mobile{
+        display: none;
     }
     .send{
         width: 100%;

@@ -77,7 +77,7 @@ function formatDate(date){
 }
 
 function toggleUsers(){
-    usersList.toggle();
+    usersList.toggleClass('hidden-mobile');
 }
 
 function scrollDownMessages(){
