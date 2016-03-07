@@ -2,15 +2,19 @@ var author = "Jason Statham";
 
 function send(){
     if($('#message').val().length == 0){
-        alert("Message can not be empty");
+        sweetAlert(
+            'Oops...',
+            'Message can not be empty!',
+            'error'
+        );
         return;
     }
     var message = '<div class="message my-message">' + $('#message').val() + '</div></div>';
     var date = new Date();
-    var messageInfo = '<div class="message-info me">' + formatDate(date) + ' ' + author +
-        ' <a href="#" title="Edit message"><i class="fa fa-pencil"></i></a> ' +
-        '<a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>' +
-        '</div>';
+    var controls = '<a href="#" title="Edit message"><i class="fa fa-pencil"></i></a> ' +
+        '<a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>';
+    var authorInfo = '<div class="author-info">' + formatDate(date) + ' ' + author + ' ' + controls + '</div>';
+    var messageInfo = '<div class="message-info me">' + authorInfo + '</div>';
     $('#message').val("");
     $('#messages-container').append(
       '<div class="message-wrapper">' + messageInfo + message + '</div>'
