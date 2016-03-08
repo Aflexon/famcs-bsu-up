@@ -3,6 +3,7 @@ package by.bsu.up.chat.server;
 import by.bsu.up.chat.Constants;
 import by.bsu.up.chat.InvalidTokenException;
 import by.bsu.up.chat.logging.Logger;
+import by.bsu.up.chat.logging.impl.FileLogger;
 import by.bsu.up.chat.logging.impl.Log;
 import by.bsu.up.chat.utils.MessageHelper;
 import by.bsu.up.chat.utils.StringUtils;
@@ -23,13 +24,13 @@ import java.util.stream.Stream;
 public class ServerHandler implements HttpHandler {
 
     private static final Logger logger = Log.create(ServerHandler.class);
-
+    private static final Logger REQUEST_LOGGER = new FileLogger("serverlog.txt");
     private List<String> messageStorage = new ArrayList<>();
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         Response response;
-
+        REQUEST_LOGGER.info("request begin");
         try {
             response = dispatch(httpExchange);
         } catch (Throwable e) {
@@ -41,10 +42,12 @@ public class ServerHandler implements HttpHandler {
             response = new Response(Constants.RESPONSE_CODE_INTERNAL_SERVER_ERROR, "Error while dispatching message");
         }
         sendResponse(httpExchange, response);
+        REQUEST_LOGGER.info("request end");
 
     }
 
     private Response dispatch(HttpExchange httpExchange) {
+        REQUEST_LOGGER.info("method " + httpExchange.getRequestMethod());
         if (Constants.REQUEST_METHOD_GET.equals(httpExchange.getRequestMethod())) {
             return doGet(httpExchange);
         } else if (Constants.REQUEST_METHOD_POST.equals(httpExchange.getRequestMethod())) {
@@ -58,22 +61,28 @@ public class ServerHandler implements HttpHandler {
     private Response doGet(HttpExchange httpExchange) {
         String query = httpExchange.getRequestURI().getQuery();
         if (query == null) {
+            REQUEST_LOGGER.info("response: absent query in request");
             return Response.badRequest("Absent query in request");
         }
         Map<String, String> map = queryToMap(query);
         String token = map.get(Constants.REQUEST_PARAM_TOKEN);
+        REQUEST_LOGGER.info("request parameters: token=" + token);
         if (StringUtils.isEmpty(token)) {
+            REQUEST_LOGGER.info("response: token parameter is required");
             return Response.badRequest("Token query parameter is required");
         }
         try {
             int index = MessageHelper.parseToken(token);
             if (index > messageStorage.size()) {
+                REQUEST_LOGGER.info("response: incorrect token");
                 return Response.badRequest(
                         String.format("Incorrect token in request: %s. Server does not have so many messages", token));
             }
             String responseBody = MessageHelper.buildServerResponseBody(messageStorage.subList(index, messageStorage.size()));
+            REQUEST_LOGGER.info("response: history size=" + messageStorage.size());
             return Response.ok(responseBody);
         } catch (InvalidTokenException e) {
+            REQUEST_LOGGER.info("response: incorrect format of token");
             return Response.badRequest(e.getMessage());
         }
     }
@@ -81,11 +90,13 @@ public class ServerHandler implements HttpHandler {
     private Response doPost(HttpExchange httpExchange) {
         try {
             String message = MessageHelper.getClientMessage(httpExchange.getRequestBody());
+            REQUEST_LOGGER.info("request parameter: message=" + message);
             logger.info(String.format("Received new message from user: %s", message));
             messageStorage.add(message);
             return Response.ok();
         } catch (ParseException e) {
             logger.error("Could not parse message.", e);
+            REQUEST_LOGGER.info("response: incorrect request body");
             return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         }
     }
@@ -99,12 +110,14 @@ public class ServerHandler implements HttpHandler {
             httpExchange.sendResponseHeaders(response.getStatusCode(), bytes.length);
 
             os.write( bytes);
+            REQUEST_LOGGER.info("response sent");
             // there is no need to close stream manually
             // as try-catch with auto-closable is used
             /**
              * {@see http://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html}
              */
         } catch (IOException e) {
+            REQUEST_LOGGER.info("could not send response");
             logger.error("Could not send response", e);
         }
     }

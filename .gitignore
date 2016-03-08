@@ -2,6 +2,7 @@
 *.iml
 .idea/
 out/
+bin/
 *.log
 *.txt
 *.json

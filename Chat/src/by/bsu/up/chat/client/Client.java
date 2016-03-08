@@ -2,6 +2,7 @@ package by.bsu.up.chat.client;
 
 import by.bsu.up.chat.Constants;
 import by.bsu.up.chat.logging.Logger;
+import by.bsu.up.chat.logging.impl.FileLogger;
 import by.bsu.up.chat.logging.impl.Log;
 import by.bsu.up.chat.utils.MessageHelper;
 import org.json.simple.JSONArray;
@@ -17,7 +18,7 @@ import java.util.Scanner;
 public class Client {
 
     public static final long POLLING_PERIOD_MILLIS = 1000L;
-
+    public static final Logger CLIENT_LOGGER = new FileLogger("clientlog.txt");
     private static final Logger logger = Log.create(Client.class);
 
     private List<String> localHistory = new ArrayList<String>();
@@ -125,23 +126,25 @@ public class Client {
     }
 
     public List<String> getMessages() {
+        CLIENT_LOGGER.info("start receiving messages");
         checkConnected();
         List<String> list = new ArrayList<>();
         HttpURLConnection incomeConnection = null;
         try {
-
+            CLIENT_LOGGER.info("send request for receive messages");
             String query = String.format("%s?%s=%s", Constants.CONTEXT_PATH, Constants.REQUEST_PARAM_TOKEN, MessageHelper.buildToken(localHistory.size()));
             URL url = new URL(Constants.PROTOCOL, host, port, query);
             incomeConnection = prepareInputConnection(url);
-
+            CLIENT_LOGGER.info("response is received");
             String response = MessageHelper.inputStreamToString(incomeConnection.getInputStream());
             JSONObject jsonObject = MessageHelper.stringToJsonObject(response);
             JSONArray jsonArray = (JSONArray) jsonObject.get("messages");
+            CLIENT_LOGGER.info("received " + jsonArray.size() + " messages");
             for (Object o : jsonArray) {
                 logger.info(String.format("Message from server: %s", o));
+                CLIENT_LOGGER.info("message from server: " + o);
                 list.add(o.toString());
             }
-
 
             /**
              * Here is an example how for cycle can be replaced with Java 8 Stream API
@@ -151,17 +154,20 @@ public class Client {
 
         } catch (ParseException e) {
             logger.error("Could not parse message", e);
+            CLIENT_LOGGER.error("could not parse message", e);
         } catch (ConnectException e) {
             logger.error("Connection error. Disconnecting...", e);
+            CLIENT_LOGGER.error("connection error", e);
             disconnect();
         } catch (IOException e) {
             logger.error("IOException occured while reading input message", e);
+            CLIENT_LOGGER.error("IOException occured while reading input message", e);
         } finally {
             if (incomeConnection != null) {
                 incomeConnection.disconnect();
             }
         }
-
+        CLIENT_LOGGER.info("stop receiving messages");
         return list;
     }
 
@@ -169,21 +175,26 @@ public class Client {
         checkConnected();
         HttpURLConnection outcomeConnection = null;
         try {
+            CLIENT_LOGGER.info("start sending message \"" + message + "\"");
             outcomeConnection = prepareOutputConnection();
             byte[] buffer = MessageHelper.buildSendMessageRequestBody(message).getBytes();
             OutputStream outputStream = outcomeConnection.getOutputStream();
             outputStream.write(buffer, 0, buffer.length);
             outputStream.close();
             outcomeConnection.getInputStream(); //to send data to server
+            CLIENT_LOGGER.info("message sent");
         } catch (ConnectException e) {
             logger.error("Connection error. Disconnecting...", e);
+            CLIENT_LOGGER.error("connection error", e);
             disconnect();
         } catch (IOException e) {
+            CLIENT_LOGGER.error("IOException", e);
             logger.error("IOException occurred while sending message", e);
         } finally {
             if (outcomeConnection != null) {
                 outcomeConnection.disconnect();
             }
+            CLIENT_LOGGER.info("stop sending message \"" + message + "\"");
         }
     }
 }
