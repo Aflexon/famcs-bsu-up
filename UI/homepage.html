@@ -11,7 +11,7 @@
         <link href='https://fonts.googleapis.com/css?family=Raleway:300,400,200' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     </head>
-    <body>
+    <body onload="run()">
         <nav class="navbar navbar-default">
             <div class="navbar-header">
                 <a class="navbar-brand" href="homepage.html">
@@ -19,52 +19,13 @@
                 </a>
             </div>
             <div class="navbar-right">
-                <span class="label label-danger"><i class="fa fa-server"></i> Offline</span>
-                <button id="bars" onclick="toggleUsers()" class="btn btn-navbar"><i class="fa fa-bars"></i></button>
+                <span class="label label-success"><i class="fa fa-server"></i> Online</span>
+                <button id="bars" onclick="toggleSidebar()" class="btn btn-navbar"><i class="fa fa-bars"></i></button>
             </div>
         </nav>
         <div class="container">
             <div class="left-column">
                 <div class="messages-container" id="messages-container">
-                    <div class="message-wrapper">
-                        <div class="message-info">28.02.2016 17:58 Selena Gomez</div>
-                        <div class="message">Hi, Jason Statham</div>
-                    </div>
-                    <div class="message-wrapper">
-                        <div class="message-info me">
-                            <div class="author-info">
-                                28.02.2016 18:00 Jason Statham
-                                <a href="#" class="edit" title="Edit message"><i class="fa fa-pencil"></i></a>
-                                <a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="message my-message">Hi, Selena! How are you?</div>
-                    </div>
-                    <div class="message-wrapper">
-                        <div class="message-info">28.02.2016 18:01 Selena Gomez</div>
-                        <div class="message">I'm ok!</div>
-                    </div>
-                    <div class="message-wrapper">
-                        <div class="message-info">28.02.2016 18:02 Selena Gomez</div>
-                        <div class="message">What about you?</div>
-                    </div>
-                    <div class="message-wrapper">
-                        <div class="message-info me">
-                            <div class="author-info">
-                                28.02.2016 18:08 Jason Statham
-                                <a href="#" class="edit" title="Edit message"><i class="fa fa-pencil"></i></a>
-                                <a href="#" class="delete" title="Remove message"><i class="fa fa-trash"></i></a>
-                            </div>
-                            <div class="edit-info">
-                                Edited 28.02.2016 18:49
-                            </div>
-                        </div>
-                        <div class="message my-message">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют от нас анализа новых предложений. Разнообразный и богатый опыт постоянное информационно-пропагандистское обеспечение нашей деятельности способствует подготовки и реализации направлений прогрессивного развития.</div>
-                    </div>
-                    <div class="message-wrapper">
-                        <div class="message-info">28.02.2016 18:08 Woody Allen</div>
-                        <div class="message deleted">This message has been removed.</div>
-                    </div>
                 </div>
             </div>
             <div class="send">
@@ -73,14 +34,9 @@
                     <button type="submit" class="btn btn-send">Send</button>
                 </form>
             </div>
-            <div id="users-list" class="right-column hidden-mobile">
+            <div id="sidebar" class="right-column hidden-mobile">
                 <ul class="users">
                     <li class="me"><i class="fa fa-user"></i> (Me) <span id="me">Guest</span> <a href="#" onclick="changeName()" title="Edit name"><i class="fa fa-pencil"></i></a></li>
-                    <li><i class="fa fa-user"></i> Louis Tomlinson</li>
-                    <li><i class="fa fa-user"></i> Jennifer Lopez</li>
-                    <li><i class="fa fa-user"></i> Selena Gomez</li>
-                    <li><i class="fa fa-user"></i> Claude Akins</li>
-                    <li><i class="fa fa-user"></i> Woody Allen</li>
                 </ul>
             </div>
         </div>
@@ -88,8 +44,30 @@
             <p class="text-muted">&copy 2016 Aleksey Afanasenko</p>
         </footer>
 
-        <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+        <template id="message-template">
+            <div class="message-info {class}">
+                <div class="author-info">
+                    {date} {author}
+                    {ctrl}
+                </div>
+                {editInfo}
+            </div>
+            <div class="message {class}">{message}</div>
+        </template>
+
+        <template id="edit-info-template">
+            <div class="edit-info">
+                Edited {date}
+            </div>
+        </template>
+
+        <template id="ctrl-template">
+            <a href="#" title="Edit message"><i class="fa fa-pencil edit"></i></a>
+            <a href="#" title="Remove message"><i class="fa fa-trash delete"></i></a>
+        </template>
+
         <script src="js/sweetalert.min.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/scripts.js"></script>
     </body>
 </html>

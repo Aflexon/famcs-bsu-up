@@ -1,3 +1,7 @@
+template{
+    display: none;
+}
+
 textarea
 {
     -webkit-box-sizing: border-box;
@@ -77,8 +81,8 @@ a.navbar-brand{
 }
 
 .left-column{
-    width: 85%;
     bottom: 50px;
+    width: 85%;
 }
 
 .deleted{
@@ -129,8 +133,9 @@ a.navbar-brand{
     clear:both;
 }
 
-.message-info.me{
+.message-info.my-message{
     text-align: right;
+    float: none;
 }
 
 .message-info{
@@ -203,7 +208,6 @@ a.navbar-brand{
 
 .my-message{
     float: right;
-    background: #2EB398;
 }
 
 .btn-send{
