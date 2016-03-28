@@ -78,7 +78,7 @@ public class ServerHandler implements HttpHandler {
                 return Response.badRequest(
                         String.format("Incorrect token in request: %s. Server does not have so many messages", token));
             }
-            String responseBody = MessageHelper.buildServerResponseBody(messageStorage.subList(index, messageStorage.size()));
+            String responseBody = MessageHelper.buildServerResponseBody(messageStorage.subList(index, messageStorage.size()), messageStorage.size());
             REQUEST_LOGGER.info("response: history size=" + messageStorage.size());
             return Response.ok(responseBody);
         } catch (InvalidTokenException e) {
