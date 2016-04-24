@@ -1,3 +1,8 @@
+var Application = {
+    mainUrl : 'http://localhost:8080/chat/',
+    token : 'TN11EN'
+};
+
 var messagesKey = "TypeWriter Messages";
 var authorKey = "TypeWriter Author";
 
@@ -14,10 +19,77 @@ function run(){
     document.getElementById("message-form").addEventListener("keypress", keypressOnForm);
 
     document.getElementById("messages-container").addEventListener("click", delegateEvent);
-
     loadFromStorage();
-    render();
+    loadMessages(function(){render()});
 }
+function isError(text) {
+    if(text == "")
+        return false;
+
+    try {
+        var obj = JSON.parse(text);
+    } catch(ex) {
+        return true;
+    }
+
+    return !!obj.error;
+}
+
+function output(value){
+    var output = document.getElementById('output');
+
+    output.innerText = JSON.stringify(value, null, 2);
+}
+
+function defaultErrorHandler(message) {
+    console.error(message);
+    output(message);
+}
+
+function ajax(method, url, data, continueWith, continueWithError) {
+    var xhr = new XMLHttpRequest();
+
+    continueWithError = continueWithError || defaultErrorHandler;
+    xhr.open(method || 'GET', url, true);
+
+    xhr.onload = function () {
+        if (xhr.readyState !== 4)
+            return;
+
+        if(xhr.status != 200) {
+            continueWithError('Error on the server side, response ' + xhr.status);
+            return;
+        }
+
+        if(isError(xhr.responseText)) {
+            continueWithError('Error on the server side, response ' + xhr.responseText);
+            return;
+        }
+
+        continueWith(xhr.responseText);
+    };
+
+    xhr.ontimeout = function () {
+        continueWithError('Server timed out !');
+    };
+
+    xhr.onerror = function (e) {
+        var errMsg = 'Server connection error !\n'+
+            '\n' +
+            'Check if \n'+
+            '- server is active\n'+
+            '- server sends header "Access-Control-Allow-Origin:*"\n'+
+            '- server sends header "Access-Control-Allow-Methods: PUT, DELETE, POST, GET, OPTIONS"\n';
+
+        continueWithError(errMsg);
+    };
+
+    xhr.send(data);
+}
+
+window.onerror = function(err) {
+    output(err.toString());
+};
 
 function delegateEvent(evt){
     if(evt.target.classList.contains('edit')){
@@ -144,6 +216,20 @@ function newMessage(messageText, messageAuthor){
     };
 }
 
+function addMessage(messageObject){
+    var date = new Date();
+    date.setTime(messageObject.timestamp);
+    messageList.push({
+        id: messageObject.id,
+        author: messageObject.author,
+        isMy: messageObject.author == author,
+        remove: false,
+        edit: false,
+        message: htmlentities(messageObject.text),
+        date: formatDate(date)
+    });
+}
+
 function send(){
     var messageField = document.getElementById('message');
     if(messageField.value.length == 0){
@@ -212,16 +298,30 @@ function saveAuthor(author){
     checkStorage();
     localStorage.setItem(authorKey, author);
 }
+function loadMessages(done){
+    var url = Application.mainUrl + '?token=' + Application.token;
+
+    ajax('GET', url, null, function(responseText){
+        var response = JSON.parse(responseText);
+        console.log(response);
+        response.messages.forEach(function(item, i, arr){
+            addMessage(item);
+        });
+        Application.token = response.token;
+        done();
+    });
+}
 
 function loadFromStorage(){
     checkStorage();
-    messageList = localStorage.getItem(messagesKey);
+    /*messageList = localStorage.getItem(messagesKey);
     if(!messageList){
         messageList = [newMessage("Welcome to our chat!", "System")]
     }
     else{
         messageList = JSON.parse(messageList)
     }
+    */
     author = localStorage.getItem(authorKey);
     if(!author){
         author = "Guest";
