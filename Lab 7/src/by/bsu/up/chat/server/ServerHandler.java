@@ -2,6 +2,7 @@ package by.bsu.up.chat.server;
 
 import by.bsu.up.chat.Constants;
 import by.bsu.up.chat.InvalidTokenException;
+import by.bsu.up.chat.MessageExistException;
 import by.bsu.up.chat.common.models.Message;
 import by.bsu.up.chat.logging.Logger;
 import by.bsu.up.chat.logging.impl.Log;
@@ -98,6 +99,9 @@ public class ServerHandler implements HttpHandler {
         } catch (ParseException e) {
             logger.error("Could not parse message.", e);
             return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
+        } catch (MessageExistException e){
+            logger.error("Message with same id exist.", e);
+            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Message with same id exist");
         }
     }
 

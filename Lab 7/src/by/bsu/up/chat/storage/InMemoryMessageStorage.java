@@ -74,6 +74,7 @@ public class InMemoryMessageStorage implements MessageStorage {
     public void addMessage(Message newMessage) {
         for(Message message : messages){
             if (message.getId().equals(newMessage.getId())){
+
                 return;
             }
         }
@@ -86,6 +87,7 @@ public class InMemoryMessageStorage implements MessageStorage {
         for(Message message : messages){
             if (message.getId().equals(updateMessage.getId()) && !StringUtils.isEmpty(message.getText())){
                 message.setText(updateMessage.getText());
+                updatePersistenceFile();
                 return true;
             }
         }
@@ -97,6 +99,7 @@ public class InMemoryMessageStorage implements MessageStorage {
         for(Message message : messages){
             if (message.getId().equals(messageId)){
                 message.setText("");
+                updatePersistenceFile();
                 return true;
             }
         }
