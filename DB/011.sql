@@ -1,0 +1,1 @@
+SELECT DATEDIFF (CURDATE(), (SELECT date FROM messages WHERE id = (SELECT MIN(id) FROM messages)))

@@ -1,0 +1,1 @@
+SELECT users.name FROM messages JOIN users ON users.id = messages.user_id WHERE DATE(date) = curdate() GROUP BY user_id HAVING COUNT(*) > 3

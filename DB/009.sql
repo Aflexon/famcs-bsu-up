@@ -1,0 +1,1 @@
+SELECT users.name, messages.date, messages.text FROM users JOIN messages ON messages.user_id = users.id WHERE LENGTH(text) > 140

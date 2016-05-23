@@ -1,0 +1,1 @@
+SELECT users.name, messages.text, messages.date FROM messages JOIN users ON users.id = messages.user_id WHERE messages.text LIKE'%интеграл%'
