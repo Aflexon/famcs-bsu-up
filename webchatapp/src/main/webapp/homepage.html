@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>TypeWriter</title>
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/normalize.css" rel="stylesheet">
+        <link href="css/sweetalert.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Raleway:300,400,200' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+    <body onload="run()">
+        <nav class="navbar navbar-default">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="homepage.html">
+                    TypeWriter
+                </a>
+            </div>
+            <div class="navbar-right">
+                <span class="label label-success"><i class="fa fa-server"></i> Online</span>
+                <button id="bars" onclick="toggleSidebar()" class="btn btn-navbar"><i class="fa fa-bars"></i></button>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="left-column">
+                <div class="messages-container" id="messages-container">
+                </div>
+            </div>
+            <div class="send">
+                <form id="message-form" class="message-send">
+                    <textarea id="message" required placeholder="What do you want to say?"></textarea>
+                    <button type="submit" class="btn btn-send">Send</button>
+                </form>
+            </div>
+            <div id="sidebar" class="right-column hidden-mobile">
+                <ul class="users">
+                    <li class="me"><i class="fa fa-user"></i> (Me) <span id="me">Guest</span> <a href="#" onclick="changeName()" title="Edit name"><i class="fa fa-pencil"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <footer class="footer">
+            <p class="text-muted">&copy 2016 Aleksey Afanasenko</p>
+        </footer>
+
+        <template id="message-template">
+            <div class="message-info {class}">
+                <div class="author-info">
+                    {date} {author}
+                    {ctrl}
+                </div>
+                {editInfo}
+            </div>
+            <div class="message {class}">{message}</div>
+        </template>
+
+        <template id="edit-info-template">
+            <div class="edit-info">
+                Edited {date}
+            </div>
+        </template>
+
+        <template id="ctrl-template">
+            <a href="#" title="Edit message"><i class="fa fa-pencil edit"></i></a>
+            <a href="#" title="Remove message"><i class="fa fa-trash delete"></i></a>
+        </template>
+
+        <script src="js/sweetalert.min.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>

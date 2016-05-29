@@ -1,4 +1,4 @@
-package main.java.by.bsu.fpmi.up.webchatapp.servlets;
+package by.bsu.fpmi.up.webchatapp.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
