@@ -15,33 +15,27 @@ import java.util.Scanner;
 public class UserStorage {
 
     protected static Map<String, User> users;
-    private static UserStorage ourInstance;
+    private static UserStorage ourInstance = new UserStorage();
 
-    static {
-        try {
-            ourInstance = new UserStorage();
-        } catch (IOException e) {
+    private UserStorage() throws UserExistsException {
+        users = new HashMap<>();
+        try(InputStream usersStream = getClass().getClassLoader().getResourceAsStream("passwords.txt")){
+            Scanner usersFile = new Scanner(usersStream);
+            while (usersFile.hasNextLine()) {
+                Scanner user = new Scanner(usersFile.nextLine());
+                user.useDelimiter(":");
+                String login = user.next();
+                String password = user.next();
+                if (users.containsKey(login)) {
+                    throw new UserExistsException("User with login " + login + " already exists in database.");
+                } else {
+                    users.put(login, new User(login, password));
+                }
+            }
+            usersFile.close();
+        } catch(IOException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    private UserStorage() throws UserExistsException, IOException {
-        users = new HashMap<String, User>();
-        InputStream usersStream = getClass().getClassLoader().getResourceAsStream("passwords.txt");
-        Scanner usersFile = new Scanner(usersStream);
-        while (usersFile.hasNextLine()) {
-            Scanner user = new Scanner(usersFile.nextLine());
-            user.useDelimiter(":");
-            String login = user.next();
-            String password = user.next();
-            if (users.containsKey(login)) {
-                throw new UserExistsException("User with login " + login + " already exists in database.");
-            } else {
-                users.put(login, new User(login, password));
-            }
-        }
-        usersFile.close();
-        usersStream.close();
     }
 
     public static UserStorage getInstance() {
