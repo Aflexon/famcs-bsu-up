@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(value = "/homepage.html")
+@WebFilter(value = {"/homepage.html", "/chat"})
 public class ChatFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
