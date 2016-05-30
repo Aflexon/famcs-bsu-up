@@ -12,9 +12,9 @@ public class EnvVarsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final String[] vars = { "JAVA_HOME", "M2_HOME", "CATALINA_HOME", "USERNAME", "PATH"};
+        final String[] vars = {"JAVA_HOME", "M2_HOME", "CATALINA_HOME", "USERNAME", "PATH"};
         for (String var : vars) {
             resp.getOutputStream().println(String.format("%s=%s", var, System.getenv(var)));
-    }
+        }
     }
 }

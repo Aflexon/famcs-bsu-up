@@ -24,12 +24,13 @@ public class UserStorage {
             while (usersFile.hasNextLine()) {
                 Scanner user = new Scanner(usersFile.nextLine());
                 user.useDelimiter(":");
+                String uid = user.next();
                 String login = user.next();
                 String password = user.next();
                 if (users.containsKey(login)) {
                     throw new UserExistsException("User with login " + login + " already exists in database.");
                 } else {
-                    users.put(login, new User(login, password));
+                    users.put(login, new User(uid, login, password));
                 }
             }
             usersFile.close();
@@ -46,6 +47,22 @@ public class UserStorage {
         User user = users.get(login);
         String hashedPassword = Hashcode.encryptPassword(password);
         return user != null && user.getPassword().equals(hashedPassword);
+    }
+
+    public User getUserByUid(String uid) {
+        if(uid == null){
+            return null;
+        }
+        for(Map.Entry<String, User> entry : users.entrySet()) {
+            if (uid.equals(entry.getValue().getUid())) {
+               return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    public User getUserByLogin(String login) {
+        return users.get(login);
     }
 
 }
