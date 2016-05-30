@@ -49,7 +49,6 @@ public class ChatServlet extends HttpServlet {
         try {
             Message message = MessageHelper.getClientMessage(req.getInputStream());
             messageStorage.addMessage(message);
-            resp.getOutputStream().println("Ok");
         } catch (ParseException e) {
             resp.sendError(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         } catch (MessageExistException e){
@@ -61,9 +60,7 @@ public class ChatServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Message message = MessageHelper.getClientMessage(req.getInputStream());
-            if (messageStorage.updateMessage(message)) {
-                resp.getOutputStream().println("Ok");
-            } else {
+            if (!messageStorage.updateMessage(message)) {
                 resp.sendError(Constants.RESPONSE_CODE_BAD_REQUEST, "This message does not exist");
             }
         } catch (ParseException e) {
@@ -77,9 +74,7 @@ public class ChatServlet extends HttpServlet {
         if (StringUtils.isEmpty(messageId)) {
             resp.sendError(Constants.RESPONSE_CODE_BAD_REQUEST, "Message id query parameter is required");
         }
-        if (messageStorage.removeMessage(messageId)){
-            resp.getOutputStream().println("Ok");
-        } else {
+        if (!messageStorage.removeMessage(messageId)) {
             resp.sendError(Constants.RESPONSE_CODE_BAD_REQUEST, "This message does not exist");
         }
     }

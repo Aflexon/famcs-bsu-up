@@ -1,5 +1,5 @@
 var Application = {
-    mainUrl : 'http://localhost:8080/chat/',
+    mainUrl : 'http://localhost:8080/chat',
     token : 'TN11EN'
 };
 
@@ -9,6 +9,25 @@ var authorKey = "TypeWriter Author";
 var author = "Guest";
 var messageList = [];
 
+function getCookie(name) {
+    var cookie = " " + document.cookie;
+    var search = " " + name + "=";
+    var setStr = null;
+    var offset = 0;
+    var end = 0;
+    if (cookie.length > 0) {
+        offset = cookie.indexOf(search);
+        if (offset != -1) {
+            offset += search.length;
+            end = cookie.indexOf(";", offset)
+            if (end == -1) {
+                end = cookie.length;
+            }
+            setStr = unescape(cookie.substring(offset, end));
+        }
+    }
+    return(setStr);
+}
 
 function run(){
     document.getElementById("message-form").addEventListener("submit", function(e){
@@ -20,7 +39,10 @@ function run(){
 
     document.getElementById("messages-container").addEventListener("click", delegateEvent);
     loadFromStorage();
-    loadMessages(function(){render()});
+    setInterval(function () {
+        loadMessages();
+    }, 500);
+    renderName(author);
 }
 function isError(text) {
     if(text == "")
@@ -119,9 +141,13 @@ function edit(messageWrapper){
                 swal.close();
                 return false;
             }
+
             message.message = htmlentities(messageValue);
+            message.text = htmlentities(messageValue);
             message.edit = formatDate(new Date());
-            updateMessage(message);
+            ajax('PUT', Application.mainUrl, JSON.stringify(message), function(responseText) {
+                updateMessage(message);
+            });
             swal.close();
         }
     );
@@ -130,7 +156,11 @@ function edit(messageWrapper){
 function remove(messageWrapper){
     var message = messageList[indexByElement(messageWrapper, messageList)];
     message.remove = true;
-    updateMessage(message);
+    message.message = "";
+    message.text = "";
+    ajax('DELETE', Application.mainUrl + "?msgId=" + message.id, null, function(responseText) {
+        updateMessage(message);
+    });
 }
 
 function indexByElement(element, messages){
@@ -186,16 +216,10 @@ function renderMessage(message){
     messageWrapper.scrollIntoView();
 }
 
-function render(){
-    for(var i = 0; i < messageList.length; i++){
-        renderMessage(messageList[i]);
-    }
-    renderName(author);
-}
-
 function updateMessage(message){
     saveMessages(messageList);
     var messageWrapper = document.querySelector('[data-id="' + message.id + '"]');
+    console.log(messageWrapper);
     messageWrapper.innerHTML = getMessage(message);
 }
 
@@ -209,7 +233,9 @@ function newMessage(messageText, messageAuthor){
         id: guid(),
         author: messageAuthor,
         date: formatDate(new Date()),
+        timestamp: (new Date()).getTime(),
         message: htmlentities(messageText),
+        text: htmlentities(messageText),
         edit: false,
         remove: false,
         isMy: my
@@ -223,11 +249,28 @@ function addMessage(messageObject){
         id: messageObject.id,
         author: messageObject.author,
         isMy: messageObject.author == author,
-        remove: false,
+        timestamp: (new Date()).getTime(),
+        remove: messageObject.text == "",
         edit: false,
         message: htmlentities(messageObject.text),
+        text: htmlentities(messageObject.text),
         date: formatDate(date)
     });
+}
+
+function setOffline(){
+    var statusLabel = document.getElementById("statusLabel");
+    statusLabel.classList.remove("label-success");
+    statusLabel.classList.add("label-danger");
+    document.getElementById("status").innerText = "Offline";
+}
+
+function setOnline(){
+    var statusLabel = document.getElementById("statusLabel");
+    statusLabel.classList.remove("label-danger");
+    statusLabel.classList.add("label-success");
+    document.getElementById("status").innerText = "Online";
+
 }
 
 function send(){
@@ -241,10 +284,10 @@ function send(){
         return;
     }
     var message = newMessage(messageField.value);
-    messageField.value = "";
-    messageList.push(message);
-    saveMessages(messageList);
-    renderMessage(message);
+    ajax('POST', Application.mainUrl, JSON.stringify(message), function(responseText){
+        messageField.value = "";
+    });
+
 }
 
 function changeName(){
@@ -298,17 +341,19 @@ function saveAuthor(author){
     checkStorage();
     localStorage.setItem(authorKey, author);
 }
-function loadMessages(done){
+function loadMessages(){
     var url = Application.mainUrl + '?token=' + Application.token;
 
     ajax('GET', url, null, function(responseText){
         var response = JSON.parse(responseText);
-        console.log(response);
+        setOnline();
         response.messages.forEach(function(item, i, arr){
             addMessage(item);
+            renderMessage(messageList[messageList.length - 1]);
         });
         Application.token = response.token;
-        done();
+    }, function() {
+        setOffline();
     });
 }
 
@@ -322,7 +367,7 @@ function loadFromStorage(){
         messageList = JSON.parse(messageList)
     }
     */
-    author = localStorage.getItem(authorKey);
+    author = getCookie("user_name");
     if(!author){
         author = "Guest";
     }

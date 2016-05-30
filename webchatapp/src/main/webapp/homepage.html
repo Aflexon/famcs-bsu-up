@@ -19,7 +19,9 @@
                 </a>
             </div>
             <div class="navbar-right">
-                <span class="label label-success"><i class="fa fa-server"></i> Online</span>
+                <span class="label label-success" id="statusLabel">
+                    <i class="fa fa-server"></i> <span id="status">Online</span>
+                </span>
                 <button id="bars" onclick="toggleSidebar()" class="btn btn-navbar"><i class="fa fa-bars"></i></button>
             </div>
         </nav>
@@ -36,7 +38,7 @@
             </div>
             <div id="sidebar" class="right-column hidden-mobile">
                 <ul class="users">
-                    <li class="me"><i class="fa fa-user"></i> (Me) <span id="me">Guest</span> <a href="#" onclick="changeName()" title="Edit name"><i class="fa fa-pencil"></i></a></li>
+                    <li class="me"><i class="fa fa-user"></i> (Me) <span id="me">Guest</span> <a href="/" title="Edit name"><i class="fa fa-pencil"></i></a></li>
                 </ul>
             </div>
         </div>

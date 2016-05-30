@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 })
 public class AuthServlet extends HttpServlet {
     public static final String COOKIE_USER_ID = "uid";
+    public static final String COOKIE_USER_NAME = "user_name";
 
     private int cookieLifeTime = -1;
 
@@ -41,6 +42,9 @@ public class AuthServlet extends HttpServlet {
                 Cookie userIdCookie = new Cookie(COOKIE_USER_ID, user.getUid());
                 userIdCookie.setMaxAge(cookieLifeTime);
                 resp.addCookie(userIdCookie);
+                Cookie userNameCookie = new Cookie(COOKIE_USER_NAME, user.getLogin());
+                userNameCookie.setMaxAge(cookieLifeTime);
+                resp.addCookie(userNameCookie);
                 resp.sendRedirect("/homepage.html");
             } else {
                 req.setAttribute("error", "These credentials do not match our records.");
